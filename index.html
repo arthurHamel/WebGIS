@@ -1,0 +1,1175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>GeoLibrary LERC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="http://openlayers.org/en/v3.11.2/css/ol.css" type="text/css">
+<script src="http://openlayers.org/en/v3.11.2/build/ol.js"></script>
+<link rel="stylesheet" href="css/icon.css">
+<link rel="stylesheet" href="css/fontello.css">
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="stylesheet" href="toastr.css">
+<script src="toastr.js"></script>
+<script src="canva-toBlob.js"></script>
+<script src="https://rawgit.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
+
+
+
+
+
+<style>
+body, html {
+  height: 100vh;
+}
+ .map {
+        height: 100vh;
+        width: 100vw;
+      }
+.ol-dragbox {
+  background-color: rgba(255,255,255,0.4);
+  border-color: rgba(100,150,0,1);
+}
+.rotate-north {
+  top: 65px;
+  left: .5em;
+}
+.ol-touch .rotate-north {
+  top: 100px;
+}
+
+.share {
+  top: 65px;
+  left: .5em;
+}
+
+.ol-touch .share {
+  top: 80px;
+}
+
+.table-head {
+ float:left;
+ width:60px;
+ text-align:center;
+ font-weight:bold;
+ }
+ .table {
+ float:none;
+ }
+ .table-line {
+ float:left;
+ width:60px;
+ text-align:center;
+ }
+
+ .menuItems{
+ width:100%;  
+clear: left;
+ color: gray;
+ padding-left:12px; 
+ cursor:default; 
+ background-color:rgba(0,0,0,0);  
+ }
+ .menuItemsTitle{
+ border-top:0.5px solid rgba(150,150,150,1);
+  height: 60px;
+  line-height: 60px;
+}
+
+ .infoItem:hover{
+ color:#007fff;
+ }
+ .infoItem{
+ padding-left:20px;
+ }
+span
+{
+  display: block;
+  vertical-align: middle;
+}
+.controlTop{
+float:left;
+width:15%;
+ height: 60px;
+  line-height: 60px;
+  text-align:center;
+}
+.controlTop:hover{
+ color:#007fff;
+}
+ .menuItemsTitle:hover{
+ color:#007fff;
+ }
+#menu {
+    width: 250px;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    left: -250px;
+    top: 0px;
+    color: Black;
+	overflow:auto;
+}
+
+#infoTrigger {
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+#menuTrigger {
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#info {
+    width: 0px;
+	overflow:auto;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    color: Black;
+
+}
+
+#search {
+    width: 250px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    left: 50px;
+    top: 10px;
+    color: Black;
+	font-size:120%;
+	padding-left:15px;
+	border-width:0px;
+	border : none;
+}
+#searchSend {
+    width: 40px;
+    height: 40px;
+	margin-bottom: 10px;
+    background-color: rgba(255,255,255,0.7);
+    position: absolute;
+    left: 300px;
+    top: 10px;
+    color: grey;
+    padding-bottom:20px;
+    text-align:center;
+	display: block;
+    vertical-align: middle;
+	
+}
+#searchSend:hover{
+ color:#007fff;
+ background-color: rgba(255,255,255,0.85);
+ cursor:pointer;
+}
+
+#searchResultsList{
+	width: 290px;
+    height: 0px;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    left: 50px;
+    top: 50px;
+}
+
+.searchResults{
+    height: 40px;
+	border-top:0.5px solid rgba(150,150,150,1);
+    background-color: rgba(255,255,255,0.9);
+	display: block;
+    vertical-align: middle;
+	
+}
+
+.searchResults:hover{
+     color:#007fff;
+	 cursor:pointer;
+	 background-color: rgba(255,255,255,0.75);
+}
+.resultsItem{
+	float:left;
+	width:220px;
+	height:40px;
+	padding-left:10px;
+	color:black;
+	background-color: none;
+}
+
+.resultsCat{
+	float:left;
+	width:70px;
+	height:40px;
+	text-align:right;
+	padding-right:10px;
+	height:29px;
+	color:grey;
+	background-color: none;
+}
+
+.tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+  }
+
+.tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+  }
+
+.tooltip-static {
+  background-color: #ffcc33;
+  color: black;
+  border: 1px solid white;
+  }
+
+.tooltip-measure:before,
+.tooltip-static:before {
+  border-top: 6px solid rgba(0, 0, 0, 0.5);
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
+}
+.tooltip-static:before {
+  border-top-color: #ffcc33;
+  
+}
+
+
+</style>
+</head>
+<body>
+
+    
+<div class="screen">
+
+  <div class="span12">
+    <div id="map" class="map"></div>
+	<div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+
+  <div id="infoTrigger" onmousemove="infoVisible()" ></div>
+
+   <div id="info" >
+	  <div id="frameInfo"></div>
+    </div>
+
+   <div id="menuTrigger" onmousemove="menuVisible()" ></div>
+   
+    <div id="searchBar"><input type="text" name="fname" id='search' placeholder=" Go to site (e.g. TAP03, Roxy)" onkeypress=" search();"><span><i id="searchSend" class="search icon"></span></i></div>
+	<div id="searchResultsList"></div>
+}
+ <div id="menu">
+    <div style="text-align:center"><h3>LERC GeoLibrary</h3></div>
+	<div  class="menuItems">
+	<div class="controlTop" id="get-info">
+	<span title="Info"><i class="info icon"></i></span></div>
+	<div class="controlTop" id="measure">
+	<span title="Measuring tool"><i class="ruler icon2"></i></span></div>
+	<div class="controlTop" id="timeline">
+	<span title="Timeline of available images"><i class="clock icon"></i></span></div>
+<div class="controlTop" id="download-data">
+	<span title="Download GeoData (Vector/Raster)"><i class="download icon"></i></span></div>
+<div id="download-png" class="controlTop">
+	<span  title="Export current view as PNG"><i class="printer icon"></i></span></div>
+<div id="share" class="controlTop">
+	<span title="Share current view"><i class="link icon"></i></span></div>
+</div>
+	<div id="layertree" class="menuItems">
+	<div id="layer" class="menuItemsTitle">
+	<span title="General GeoData"><i class="map icon"></i>Maps</span></div>
+	<div id="layers">
+
+ 
+ 	  <div style="padding-left:20px">
+        <fieldset id="layer0">
+	<div style="width:120px; float:left;">
+          <label class="checkbox" for="visible1">
+		  <input id="visible0" class="visible" type="checkbox"/>Bing Aerial
+		  </label>
+	</div>
+	<div style="width:80px;float:left; margin-left:4px;margin-top:10px;">
+          <input class="opacity" type="range" min="0" max="1" step="0.01"/>
+	</div>     
+        </fieldset>
+	</div>  
+	</div>
+</div>
+<div id="layertree" class="menuItems">
+<div class="menuItemsTitle">
+	<span title="Historical, Satellite and Drone Images"><i class="airplane icon"></i>Aerial</span></div>
+<div id="layers">
+	<div style="padding-left:20px">
+        <fieldset id="layer1">
+		<div style="width:120px; float:left;">
+          <label class="checkbox" for="visible1">
+            <input id="visible1" class="visible" type="checkbox"/><span>Aerial Catalogue</span>
+          </label>
+		</div>
+		<div style="width:80px;float:left; margin-left:4px;margin-top:10px;">
+          <input class="opacity" type="range" min="0" max="1" step="0.01"/>
+        </div>     
+        </fieldset>
+	</div>
+	</div>
+	</div>
+	
+<div id="layertree" class="menuItems">
+<div class="menuItemsTitle">
+	<span title="Sites and Units"><i class="flag icon"></i>Survey</span></div>
+
+<div id="layers">
+	<div style="padding-left:20px">
+        <fieldset id="layer2">
+		<div style="width:120px; float:left;">
+          <label class="checkbox" for="visible2">
+            <input id="visible2" class="visible" type="checkbox"/><span>Sites TVS</span>
+          </label>
+		</div>
+		<div style="width:80px;float:left; margin-left:4px;margin-top:10px;">
+          <input class="opacity" type="range" min="0" max="1" step="0.01"/>
+        </div>     
+        </fieldset>
+	</div>
+	</div>
+	</div>
+<div id="layertree" class="menuItems">
+<div class="menuItemsTitle">
+	<span title="Geophysics sites and results"><i class="signal icon" id="geophys-icon"></i>Geophysics</span></div>
+<div id="layers">
+	<div style="padding-left:20px">
+        <fieldset id="layer4">
+		<div style="width:120px; float:left;">
+          <label class="checkbox" for="visible4">
+            <input id="visible4" class="visible" type="checkbox"/><span>Mapping Tap03</span>
+          </label>
+		</div>
+		<div style="width:80px;float:left; margin-left:4px;margin-top:10px;">
+          <input class="opacity" type="range" min="0" max="1" step="0.01"/>
+        </div>     
+        </fieldset>
+	</div>
+	</div>
+	</div>
+<div id="mapping-remarks" class="menuItems">
+<div class="menuItemsTitle">
+	<span title="Statistics Modelling results"><i class="gear icon"></i>Data analysis</span></div>
+</div>
+<div id="layertree" class="menuItems">
+<div class="menuItemsTitle">
+	<span title="Napping spots and restaurants"><i class="mappin icon"></i>Points of interest</span></div>
+	<div id="layers">
+	<div style="padding-left:20px">
+        <fieldset id="layer3">
+		<div style="width:120px; float:left;">
+          <label class="checkbox" for="visible3">
+            <input id="visible3" class="visible" type="checkbox"/><span>Work Eat Sleep</span>
+          </label>
+		</div>
+		<div style="width:80px;float:left; margin-left:4px;margin-top:10px;">
+          <input class="opacity" type="range" min="0" max="1" step="0.01"/>
+        </div>     
+        </fieldset>
+	</div>
+	</div>
+</div>
+
+
+</div>
+
+</div>
+
+<script>
+// Set mode
+
+var mode= "view";
+// Get the  zoom and location in case of Hyperlink
+var zoom = 8;
+var center= ol.proj.fromLonLat([15, 41.35]);
+var rotation=0;
+
+     if (window.location.hash !== '') {
+        // try to restore center, zoom-level and rotation from the URL
+        var hash = window.location.hash.replace('#map=', '');
+        var parts = hash.split('/');
+        if (parts.length === 4) {
+          zoom = parseInt(parts[0], 10);
+          center = [
+            parseFloat(parts[1]),
+            parseFloat(parts[2])
+          ];
+          rotation = parseFloat(parts[3]);
+        }
+      }
+
+	  
+//Create the Menu Icon
+window.app = {};
+var app = window.app;
+app.OpenMenu = function(opt_options) {
+
+  var options = opt_options || {};
+
+  var button = document.createElement('button');
+  button.innerHTML = ' &#9776;';
+
+  var this_ = this;
+  var handleOpenMenu = function(e) {
+    $('#menu').animate({left: '0'}, 500);
+  };
+
+  button.addEventListener('click', handleOpenMenu, false);
+  button.addEventListener('touchstart', handleOpenMenu, false);
+
+  var element = document.createElement('div');
+  element.className = 'rotate-north ol-unselectable ol-control';
+  element.appendChild(button);
+
+  ol.control.Control.call(this, {
+    element: element,
+    target: options.target
+  });
+
+};
+ol.inherits(app.OpenMenu, ol.control.Control); 
+// Measuring Tool
+
+var source = new ol.source.Vector();
+
+var measuringVector = new ol.layer.Vector({
+  source: source,
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 255, 0.2)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#ffcc33',
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: '#ffcc33'
+      })
+    })
+  })
+});
+
+
+/**
+ * Currently drawn feature.
+ * @type {ol.Feature}
+ */
+var sketch;
+
+
+/**
+ * The help tooltip element.
+ * @type {Element}
+ */
+var helpTooltipElement;
+
+
+/**
+ * Overlay to show the help messages.
+ * @type {ol.Overlay}
+ */
+var helpTooltip;
+
+
+/**
+ * The measure tooltip element.
+ * @type {Element}
+ */
+var measureTooltipElement;
+
+
+/**
+ * Overlay to show the measurement.
+ * @type {ol.Overlay}
+ */
+var measureTooltip;
+
+
+/**
+ * Message to show when the user is drawing a polygon.
+ * @type {string}
+ */
+var continuePolygonMsg = 'Click to continue drawing the polygon';
+
+
+/**
+ * Message to show when the user is drawing a line.
+ * @type {string}
+ */
+var continueLineMsg = 'Click to continue drawing the line';
+
+
+/**
+ * Handle pointer move.
+ * @param {ol.MapBrowserEvent} evt
+ */
+var pointerMoveHandler = function(evt) {
+  if (evt.dragging) {
+    return;
+  }
+  /** @type {string} */
+  var helpMsg = 'Click to start drawing';
+  /** @type {ol.Coordinate|undefined} */
+  var tooltipCoord = evt.coordinate;
+
+  if (sketch) {
+    var output;
+    var geom = (sketch.getGeometry());
+    if (geom instanceof ol.geom.Polygon) {
+      output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
+      helpMsg = continuePolygonMsg;
+      tooltipCoord = geom.getInteriorPoint().getCoordinates();
+    } else if (geom instanceof ol.geom.LineString) {
+      output = formatLength( /** @type {ol.geom.LineString} */ (geom));
+      helpMsg = continueLineMsg;
+      tooltipCoord = geom.getLastCoordinate();
+    }
+    measureTooltipElement.innerHTML = output;
+    measureTooltip.setPosition(tooltipCoord);
+  }
+
+  helpTooltipElement.innerHTML = helpMsg;
+  helpTooltip.setPosition(evt.coordinate);
+};
+
+	
+// Set the sources
+
+//Basemaps
+
+
+
+//AerialData
+
+var aerialCatalogue = new ol.source.Vector({
+  url: 'data/AerialCatalog.geojson',
+  format: new ol.format.GeoJSON()
+});
+
+//Survey data
+
+var siteVectorSource = new ol.source.Vector({
+  url: 'data/TVS14_sites_all.geojson',
+  format: new ol.format.GeoJSON()
+});
+
+var siteContoursVectorSource = new ol.source.Vector({
+  url: 'data/TVS14_sites_contour_all.geojson',
+  format: new ol.format.GeoJSON()
+});
+
+//Poi Data
+
+var poiVectorSource =  new ol.source.Vector({
+  url: 'data/POI_WebGIS.geojson',
+  format: new ol.format.GeoJSON()
+	});
+
+
+// Default styles
+var defaultStyle = {
+  'Point': [new ol.style.Style({
+  label: "${Site_ID}",
+    image: new ol.style.Circle({
+      fill: new ol.style.Fill({
+        color: 'rgba(255,255,0,0.5)'
+      }),
+      radius: 5,
+      stroke: new ol.style.Stroke({
+        color: '#ff0',
+        width: 1
+      })
+    })
+  })],
+  'LineString': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 3
+    })
+  })],
+  'Polygon': [new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(0,255,255,0.5)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#0ff',
+      width: 1
+    })
+  })],
+  'MultiPoint': [new ol.style.Style({
+  label: "${Site_ID}",
+    image: new ol.style.Circle({
+      fill: new ol.style.Fill({
+        color: 'rgba(255,0,255,0.5)'
+      }),
+      radius: 5,
+      stroke: new ol.style.Stroke({
+        color: '#f0f',
+        width: 1
+      })
+    })
+  })],
+  'MultiLineString': [new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#0f0',
+      width: 3
+    })
+  })],
+  'MultiPolygon': [new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,255,0.5)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#00f',
+      width: 1
+    })
+  })]
+};
+// Drag and Drop data
+var styleFunction = function(feature, resolution) {
+  var featureStyleFunction = feature.getStyleFunction();
+  if (featureStyleFunction) {
+    return featureStyleFunction.call(feature, resolution);
+  } else {
+    return defaultStyle[feature.getGeometry().getType()];
+  }
+};
+
+var dragAndDropInteraction = new ol.interaction.DragAndDrop({
+  formatConstructors: [
+    ol.format.GPX,
+    ol.format.GeoJSON,
+    ol.format.IGC,
+    ol.format.KML,
+    ol.format.TopoJSON
+  ]
+});
+
+
+//The Popup
+
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+closer.onclick = function() {
+  overlay.setPosition(undefined);
+  closer.blur();
+  return false;
+};
+var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+  element: container,
+  autoPan: true,
+  autoPanAnimation: {
+    duration: 250
+  }
+}));
+
+// Create the Map
+var styleCache = {};
+var map = new ol.Map({
+ controls: ol.control.defaults().extend([
+  new ol.control.ScaleLine(),
+    new app.OpenMenu(),
+  ]),
+interactions: ol.interaction.defaults().extend([dragAndDropInteraction]),
+  layers: [
+  	new ol.layer.Tile({
+		name: 'bingMap',
+      source: new ol.source.BingMaps({
+        key: 'AiqoFG5XF3ed3_l30TpLZzzpmVE1CmU5IuG-mNqZe0dovCca--URU2rhwSuTyeGH',
+        imagerySet: 'Aerial'
+      })
+    }),
+		
+	
+      new ol.layer.Vector({
+      source: aerialCatalogue,
+	  style: new ol.style.Style({
+             fill: new ol.style.Fill({color: 'rgba(255,255,255,0.05'}),
+			 stroke: new ol.style.Stroke({color: '#3399CC', width: 1.25})
+              }),
+		
+    }),
+	 new ol.layer.Group({
+      layers: [
+	new ol.layer.Vector({
+      source: siteVectorSource,
+	  minResolution: 50,
+	  maxResolution: 200
+	}),
+	new ol.layer.Vector({
+      source: siteContoursVectorSource,
+      maxResolution: 50
+	})
+] }),
+new ol.layer.Vector({
+      source:poiVectorSource,
+	  maxResolution: 200
+	})
+  ],
+  overlays: [overlay],
+  target: 'map',
+  view: new ol.View({
+    	 center: center,
+          zoom: zoom,
+          rotation: rotation
+  })
+});
+// Measuring tools
+
+
+// Drag And drop	
+dragAndDropInteraction.on('addfeatures', function(event) {
+  var vectorSource = new ol.source.Vector({
+    features: event.features
+  });
+  map.addLayer(new ol.layer.Image({
+    source: new ol.source.ImageVector({
+      source: vectorSource,
+      style: styleFunction
+    })
+  }));
+  map.getView().fit(
+      vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
+});
+
+//Create popup info
+
+
+
+map.on('click', function(evt) {
+ selectedFeatures.clear();
+ infoBox.innerHTML = '';
+  $('#info').animate({
+    width: '0'
+  }, 300);
+  $('#menu').animate({
+    left: '-250'
+  }, 500);
+    toggle = true;
+$('#searchResultsList').animate({height: 0}, 100);
+
+  var feature = map.forEachFeatureAtPixel(evt.pixel,
+      function(feature, layer) {
+        return feature;
+		
+      });
+  if (feature) {
+  if (feature.get('Site_ID') ==null){
+  if (feature.get('name') ==null){
+  }else{
+  toastr.info(feature.get('name'));
+  content.innerHTML = "";
+  content.innerHTML += "<h4>First Layer</h4><p>" + feature.get('name') + "</p>";
+  overlay.setPosition(evt.coordinate);
+  }
+  }else{
+  toastr.info(feature.get('Site_ID'));
+  }
+  }
+});
+//Search Bar
+
+var searchResultsList = document.getElementById('searchResultsList');
+
+function search(){
+	var querry = document.getElementById("search").value;
+	
+// need to change the attribute to all layers to have a 'name' attribute. and 'tag'
+	
+	var results='';
+	var name='';
+	var category = '';
+//	var coord = [0,0];
+//	var lat=0;
+//	var lon=0;
+	var resultsCount= 0;
+	//var vectorSources = [siteVectorSource, poiVectorSource];
+	//infoBox.innerHTML+= vectorSources.length;
+	//for (var ii = 0; ii < vectorSources.length ; ii++){
+	//var source=siteVectorSource;
+	var features = poiVectorSource.getFeatures();
+	for (var i = 0; i < features.length ; i++) {
+	if (features[i].get('name').toLowerCase().indexOf(querry.toLowerCase()) !=-1){
+	name= features[i].get('name');
+	var geometry = feature[i].getGeometry();
+//    var coord = geometry.getCoordinates();
+//	lat = coord[1];
+//	lon = coord[0];
+//	category = features[i].get('cat');
+	resultsCount +=1;
+	results='<div class="searchResults" lon="10" lat="" onclick="GoTo(this);"><div class="resultsItem">'+name+'</div><div class="resultsCat">Site</div></div>';
+//	}
+	}}
+	if (resultsCount == 0){
+	results= '<div class="searchResults""><div class="resultsItem">No matching results</div></div>';
+	}
+	searchResultsList.innerHTML= results;
+	var columnHeight= String(resultsCount*40);
+	
+
+	$('#searchResultsList').animate({height: columnHeight}, 100);
+}
+
+$('#searchSend').click(function() {
+ search();
+});
+
+function GoTo(identifier){
+ var lon= 1643436.33;
+ var lat= 5117956.37;
+ var zoom = 16;
+ map.getView().setCenter([lon,lat]);
+ map.getView().setZoom(zoom);
+}
+		
+	
+	
+
+
+
+// change mouse cursor when over marker
+map.on('pointermove', function(e) {
+  if (e.dragging) {
+    $(element).popover('destroy');
+    return;
+  }
+  var pixel = map.getEventPixel(e.originalEvent);
+  var hit = map.hasFeatureAtPixel(pixel);
+  map.getTarget().style.cursor = hit ? 'pointer' : '';
+});
+
+// a normal select interaction to handle click
+var select = new ol.interaction.Select();
+map.addInteraction(select);
+
+var selectedFeatures = select.getFeatures();
+
+// a DragBox interaction used to select features by drawing boxes
+var dragBox = new ol.interaction.DragBox({
+  condition: ol.events.condition.platformModifierKeyOnly
+});
+
+map.addInteraction(dragBox);
+
+var infoBox = document.getElementById('frameInfo');
+
+
+
+
+function displayInfo(){
+  var infoSite = [];
+  var year = [];
+  var ente = [];
+  var file = [];
+  var frame =[];
+  var stripe =[];
+  var extent = dragBox.getGeometry().getExtent();
+  vectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
+    selectedFeatures.push(feature);
+	year.push(feature.get('Year'));
+	ente.push(feature.get('Ente'));
+	file.push(feature.get('Name'));
+	stripe.push(feature.get('Stripe'));
+	frame.push(feature.get('Frame'));
+  });
+  siteVectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
+    selectedFeatures.push(feature);
+	infoSite.push(feature.get('Site_ID'));
+  });
+  if (year.length > 0) {
+	var uniqueYear = [];
+	for(var i = 0; i < year.length; i++) 
+	{
+		if (uniqueYear.indexOf(year[i]) == -1) uniqueYear.push(year[i]);
+	}
+	
+function bubbleSort(a,b,c,d,e) {  //Sorting b,c,d,e according to a
+    var swapped;  
+    do {  
+        swapped = false;  
+        for (var i=0; i < a.length-1; i++) {  
+            if (a[i] > a[i+1])   
+            {  
+                var temp = a[i];  
+                a[i] = a[i+1];  
+                a[i+1] = temp;  
+  
+                var temp = b[i];  
+                b[i] = b[i+1];  
+                b[i+1] = temp;  
+
+				var temp = c[i];  
+                c[i] = c[i+1];  
+                c[i+1] = temp;  
+				
+				var temp = d[i];  
+                d[i] = d[i+1];  
+                d[i+1] = temp; 
+
+				var temp = e[i];  
+                e[i] = e[i+1];  
+                e[i+1] = temp; 				
+                swapped = true;
+				
+				
+            }  
+        }  
+    } while (swapped);  
+}  
+bubbleSort(year,ente,stripe,frame,file);
+	
+   infoBox.innerHTML = '<div id="layertree" class="menuItems">\
+	<div id="layer" class="menuItemsTitle"><span>Aerials (' +year.length + ')</span></div>\
+	<div id="layers">';
+   	for(var i = 0; i < file.length; i++) 
+	{
+	var link=[];
+	var url=[];
+	url="data/verticals/"+file[i];
+	link= '<a href="'+url+'">'+frame[i]+'</a>';
+$.ajax({
+   type: 'HEAD',
+   url: url,
+   error: function(){
+    link= frame[i];
+},
+   success: function()
+   {
+     
+   }
+ });
+
+		infoBox.innerHTML +='<div class="infoItem">'+year[i]+'_'+ente[i]+'_'+stripe[i]+'_'+link+'</div>';
+	}
+	infoBox.innerHTML += '</div></div></div>';
+	
+  }
+  
+  if (infoSite.length > 0) {
+	infoBox.innerHTML += '<div id="layertree" class="menuItems">\
+	<div id="layer" class="menuItemsTitle">\
+	<span>Sites (' +infoSite.length + ')</span></div>\
+	<div id="layers">';
+	for(var i = 0; i < infoSite.length; i++) { 
+	infoBox.innerHTML += '<div style="padding-left:20px"> '+infoSite[i] + '</div></div>';
+  }
+  infoBox.innerHTML += '</div>';
+   }
+   if (infoBox.innerHTML ==''){
+   }else{
+   infoBox.innerHTML= '<div style="text-align:center"><h3><span><i class="info icon"></i>Info</span></h3></div>' +infoBox.innerHTML
+   $('#info').animate({width: '250'}, 500);
+   }
+}
+
+dragBox.on('boxend', function(e) {
+	displayInfo();
+	});
+// clear selection when drawing a new box and when clicking on the map
+dragBox.on('boxstart', function(e) {
+  selectedFeatures.clear();
+  infoBox.innerHTML = '';
+});
+
+
+
+
+
+
+function bindInputs(layerid, layer) {
+  var visibilityInput = $(layerid + ' input.visible');
+  visibilityInput.on('change', function() {
+    layer.setVisible(this.checked);
+  });
+  visibilityInput.prop('checked', layer.getVisible());
+
+  $.each(['opacity', 'hue', 'saturation', 'contrast', 'brightness'],
+      function(i, v) {
+        var input = $(layerid + ' input.' + v);
+        input.on('input change', function() {
+          layer.set(v, parseFloat(this.value));
+        });
+        input.val(String(layer.get(v)));
+      }
+  );
+}
+map.getLayers().forEach(function(layer, i) {
+  bindInputs('#layer' + i, layer);
+  if (layer instanceof ol.layer.Group) {
+    layer.getLayers().forEach(function(sublayer, j) {
+      bindInputs('#layer' + i + j, sublayer);
+    });
+  }
+});
+
+$('#layertree .menuItemsTitle').click(function() {
+  $(this).siblings('#layers').toggle();
+}).siblings('#layers').hide();
+
+
+
+function infoVisible(){
+	$('#info').animate({
+    width: '250'
+  }, 300);
+}
+
+function menuVisible(){
+	$('#menu').animate({
+    left: '0'
+  }, 500);
+}
+
+
+$('#share').click(function() {
+var link=window.location.host+'/'+getHash();
+	 copyTextToClipboard(link);
+});
+
+$('#get-info').click(function() {
+	mode = "info";
+	 toastr.info('Ctrl + Drag to select the features you want to know about');
+});
+
+$('#measure').click(function() {
+mode= 'measure';
+	 toastr.info('Test The measuring tools');
+});
+
+$('#download-png').click(function(e) {
+ canvas = document.getElementsByTagName('canvas')[0];
+  canvas.toBlob(function (blob) {
+    saveAs(blob, 'map.png');
+  })
+	  
+});
+$('#download-data').click(function() {
+	toastr.info('Ctrl + Drag to select an area');
+toastr.warning('mode is'+ mode);
+});
+
+$('#timeline').click(function() {
+	toastr.info('Display all the available images through time (like googleEarth)');
+	 toastr.warning('Not ready yet');
+	 map.set('layers', timeLineLayers);
+});
+
+function copyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+
+  textArea.style.position = 'fixed';
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+
+  // Ensure it has a small width and height. Setting to 1px / 1em
+  // doesn't work as this gives a negative w/h on some browsers.
+  textArea.style.width = '2em';
+  textArea.style.height = '2em';
+
+  // We don't need padding, reducing the size if it does flash render.
+  textArea.style.padding = 0;
+
+  // Clean up any borders.
+  textArea.style.border = 'none';
+  textArea.style.outline = 'none';
+  textArea.style.boxShadow = 'none';
+
+  // Avoid flash of white box if rendered for any reason.
+  textArea.style.background = 'transparent';
+
+
+  textArea.value = text;
+
+  document.body.appendChild(textArea);
+
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+	toastr.success('Link copied in the clipboard');
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+
+  document.body.removeChild(textArea);
+}
+
+	function getHash(){
+	var center = view.getCenter();
+        var hash = '#map=' +
+            view.getZoom() + '/' +
+            Math.round(center[0] * 100) / 100 + '/' +
+            Math.round(center[1] * 100) / 100 + '/' +
+            view.getRotation();
+			return hash;
+			}
+      var shouldUpdate = true;
+      var view = map.getView();
+      var updatePermalink = function() {
+        if (!shouldUpdate) {
+          // do not update the URL when the view was changed in the 'popstate' handler
+          shouldUpdate = true;
+          return;
+        }
+
+        var hash=getHash();
+        var state = {
+          zoom: view.getZoom(),
+          center: view.getCenter(),
+          rotation: view.getRotation()
+        };
+        window.history.pushState(state, 'map', hash);
+      };
+
+      map.on('moveend', updatePermalink);
+
+      // restore the view state when navigating through the history, see
+      // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
+      window.addEventListener('popstate', function(event) {
+        if (event.state === null) {
+          return;
+        }
+        map.getView().setCenter(event.state.center);
+        map.getView().setZoom(event.state.zoom);
+        map.getView().setRotation(event.state.rotation);
+        shouldUpdate = false;
+      });
+
+</script>
+
+</body>
+</html>
